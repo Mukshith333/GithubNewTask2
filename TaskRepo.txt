@@ -66,3 +66,5 @@ if (connector != null) {
 } else {
     Session.Output("Connector with GUID " + connectorGUID + " not found.");
 }
+
+some element added
