@@ -1,0 +1,68 @@
+// Define the names of the two classes you want to connect
+var className1 = "Class1";
+var className2 = "Class2";
+
+// Get the Package or Element where your classes are located
+var packageOrElement = Repository.GetPackageByGuid("{PackageGUID}"); // Replace with the actual Package GUID
+
+// Find the classes by name within the package or element
+var class1 = null;
+var class2 = null;
+
+for (var i = 0; i < packageOrElement.Elements.Count; i++) {
+    var element = packageOrElement.Elements.GetAt(i);
+    if (element.Name === className1) {
+        class1 = element;
+    }
+    if (element.Name === className2) {
+        class2 = element;
+    }
+}
+
+// Check if both classes were found
+if (class1 && class2) {
+    // Create a connector between the two classes (association relationship)
+    var connector = class1.Connectors.AddNew("", "Association"); // You can use other relationship types as needed
+    connector.SupplierID = class2.ElementID;
+    connector.Update();
+
+    // Refresh the diagram to see the new connector
+    var diagram = Repository.GetCurrentDiagram(); // Replace with the desired diagram
+    diagram.Update();
+    
+    // Commit changes to the repository
+    Repository.AdviseChanges();
+    Repository.RefreshOpenDiagrams();
+    
+    Session.Output("Connector created between " + className1 + " and " + className2);
+} else {
+    Session.Output("One or both of the specified classes were not found.");
+}
+
+
+
+
+
+
+
+// GET Element Id
+--------------------------------------------------------------------------------------
+
+// Define the GUID of the connector you want to retrieve
+var connectorGUID = "{ConnectorGUID}"; // Replace with the actual Connector GUID
+
+// Get the connector by its GUID
+var connector = Repository.GetConnectorByGuid(connectorGUID);
+
+if (connector != null) {
+    // Get the Supplier ID (ID of the target element)
+    var supplierID = connector.SupplierID;
+    
+    // Get the Connector ID
+    var connectorID = connector.ConnectorID;
+    
+    Session.Output("Supplier ID: " + supplierID);
+    Session.Output("Connector ID: " + connectorID);
+} else {
+    Session.Output("Connector with GUID " + connectorGUID + " not found.");
+}
